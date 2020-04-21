@@ -1,11 +1,10 @@
 package controller;
 
-import command.ArrowCommand;
-import command.Command;
-import command.OvalCommand;
+import command.*;
 import model.Model;
 import shape.Arrow;
 import shape.Oval;
+import shape.Text;
 import view.View;
 
 import javax.imageio.ImageIO;
@@ -28,10 +27,18 @@ public class Controller {
         this.view.getToolBarPanel().addScreenshotListener(new ScreenshotListener());
         this.view.getToolBarPanel().addSaveScreenshotListener(new SaveScreenshotListener());
         this.view.getShapePanel().getArrow().addActionListener(new ArrowButtonListener());
+        this.view.getShapePanel().getRectangle().addActionListener(new RectangleButtonListener());
         this.view.getShapePanel().getOval().addActionListener(new OvalButtonListener());
+        this.view.getShapePanel().getText().addActionListener(new TextButtonListener());
+        this.view.getShapePanel().getTextField().addActionListener(new TxtInputListener());
+        this.view.getShapePanel().getRedo().addActionListener(new RedoListener());
+        this.view.getShapePanel().getUndo().addActionListener(new UndoListener());
 
         model.getMouseEvents().add(drawOvalEvent);
         model.getMouseEvents().add(drawArrowEvent);
+        model.getMouseEvents().add(drawTextEvent);
+        model.getMouseEvents().add(drawRectangleEvent);
+
     }
 
 
@@ -40,7 +47,6 @@ public class Controller {
 
         private int x1, y1;
         private int x2, y2;
-        private int d, h;
         private ArrowCommand drawArrow;
 
         @Override
@@ -139,6 +145,100 @@ public class Controller {
 
     };
 
+    private MouseAdapter drawRectangleEvent = new MouseAdapter() {
+
+        private int x1, y1;
+        private int x2, y2;
+
+        private RectangleCommand rectangleCommand;
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            model.setMouseMoveFinished(false);
+
+            x1 = e.getX();
+            y1 = e.getY();
+            x2 = e.getX();
+            y2 = e.getY();
+
+            rectangleCommand = new RectangleCommand(new shape.Rectangle(x1, y1, 0, 0));
+
+            model.setCurrentCommand(rectangleCommand);
+
+            view.getImagePanel().repaint();
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            model.setMouseMoveFinished(true);
+            mouseDragged(e);
+
+            rectangleCommand = null;
+        }
+
+        @Override
+        public void mouseDragged(MouseEvent e) {
+            x2 = e.getX();
+            y2 = e.getY();
+
+            if (x2 >= x1 && y2 >= y1) {
+                rectangleCommand.setPoint(x1, y1);
+            } else if (x2 >= x1) {
+                rectangleCommand.setPoint(x1, y2);
+            } else if (y2 >= y1) {
+                rectangleCommand.setPoint(x2, y1);
+            } else {
+                rectangleCommand.setPoint(x2, y2);
+            }
+
+            rectangleCommand.setWidth(Math.abs(x1 - x2));
+            rectangleCommand.setHeight(Math.abs(y1 - y2));
+
+            view.getImagePanel().repaint();
+        }
+
+    };
+
+    private MouseAdapter drawTextEvent = new MouseAdapter() {
+
+        private int x, y;
+
+        private TextCommand textCommand;
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            model.setMouseMoveFinished(false);
+
+            textCommand = new TextCommand(new Text(x, y, model.getCurrentText()));
+            model.setCurrentCommand(textCommand);
+            view.getImagePanel().repaint();
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+
+            mouseDragged(e);
+            model.setMouseMoveFinished(true);
+            model.setCurrentText("");
+            view.getShapePanel().getTextField().setText("");
+
+            textCommand = null;
+        }
+
+        @Override
+        public void mouseDragged(MouseEvent e) {
+
+            x = e.getX();
+            y = e.getY();
+
+            textCommand.setPoint(x, y);
+            view.getImagePanel().repaint();
+        }
+    };
+
+
+
+
 
     public void setCurrentAction(int action) {
         int currentAction = action;
@@ -160,24 +260,19 @@ public class Controller {
                 view.getImagePanel().addMouseListener(drawOvalEvent);
                 view.getImagePanel().addMouseMotionListener(drawOvalEvent);
                 break;
+            case Command.RECTANGLE:
+                view.getImagePanel().addMouseListener(drawRectangleEvent);
+                view.getImagePanel().addMouseMotionListener(drawRectangleEvent);
+                break;
+            case Command.TEXT:
+                view.getImagePanel().addMouseListener(drawTextEvent);
+                view.getImagePanel().addMouseMotionListener(drawTextEvent);
+                break;
         }
     }
 
 
-    public void redo() {
-        if (model.getResultQueue().redoable()) {
-            model.getResultQueue().redo();
-            view.getImagePanel().repaint();
-        }
-    }
 
-    public void undo() {
-        if (model.getResultQueue().undoable()) {
-            model.getResultQueue().undo();
-            view.getImagePanel().repaint();
-        }
-
-    }
 
     public void clean() {
         model.getResultQueue().clean();
@@ -205,6 +300,61 @@ public class Controller {
         }
     }
 
+    class RectangleButtonListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent event)
+        {
+            System.out.println("DRAW_OVAL");
+            setCurrentAction(Command.RECTANGLE);
+        }
+    }
+
+    class TextButtonListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent event)
+        {
+            System.out.println("DRAW_OVAL");
+
+            setCurrentAction(Command.TEXT);
+        }
+    }
+
+    class TxtInputListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent event)
+        {
+            String input = view.getShapePanel().getTextField().getText();
+            model.setCurrentText(input);
+            System.out.println(input);
+        }
+    }
+
+    class UndoListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent event)
+        {
+            if (model.getResultQueue().undoable()) {
+                model.getResultQueue().undo();
+                view.getImagePanel().repaint();
+            }
+        }
+    }
+
+    class RedoListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent event)
+        {
+            if (model.getResultQueue().redoable()) {
+                model.getResultQueue().redo();
+                view.getImagePanel().repaint();
+            }
+        }
+    }
 
     class ScreenshotListener implements ActionListener {
 

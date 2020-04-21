@@ -12,8 +12,8 @@ public class Model {
     private Memento resultQueue = new Memento();
     private ArrayList<MouseAdapter> mouseEvents = new ArrayList<>();
     private int currentAction = Command.ARROW;
-
     private boolean isMouseMoveFinished = true;
+    private String currentText = "";
 
     public Command getCurrentCommand() {
         return currentCommand;
@@ -46,5 +46,13 @@ public class Model {
 
     public void setMouseMoveFinished(boolean mouseMoveFinished) {
         isMouseMoveFinished = mouseMoveFinished;
+    }
+
+    public String getCurrentText() {
+        return currentText;
+    }
+
+    public void setCurrentText(String currentText) {
+        this.currentText = currentText;
     }
 }

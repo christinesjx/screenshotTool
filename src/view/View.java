@@ -19,7 +19,6 @@ public class View {
     private ShapePanel shapePanel;
     private ToolBarPanel toolBarPanel;
 
-    private int currentAction = Command.ARROW;
 
     private JFrame frame;
     private JPanel canvasWrapper;
@@ -105,10 +104,7 @@ public class View {
     }
 
 
-    public void registerListener(MouseAdapter listener){
 
-        imagePanel.addMouseListener(listener);
-    }
 
 
 

@@ -12,6 +12,11 @@ public class ShapePanel extends JPanel {
     private JButton arrow;
     private JButton oval;
     private JButton rectangle;
+    private JButton text;
+    private JTextField textField;
+
+    private JButton redo;
+    private JButton undo;
 
 
     public ShapePanel(Model model) {
@@ -48,9 +53,35 @@ public class ShapePanel extends JPanel {
         gbc_rectangle.gridy = 3;
         add(rectangle, gbc_rectangle);
 
+        textField = new JTextField("");
+        textField.setPreferredSize(new Dimension(100, 100));
+        GridBagConstraints gbc_textField = new GridBagConstraints();
+        gbc_textField.gridx = 0;
+        gbc_textField.gridy = 4;
+        add(textField, gbc_textField);
+
+        text = new JButton("Text");
+        GridBagConstraints gbc_text = new GridBagConstraints();
+        gbc_text.gridx = 0;
+        gbc_text.gridy = 5;
+        add(text, gbc_text);
+
+        redo = new JButton("Redo");
+        GridBagConstraints gbc_redo = new GridBagConstraints();
+        gbc_redo.gridx = 0;
+        gbc_redo.gridy = 6;
+        add(redo, gbc_redo);
+
+        undo = new JButton("Undo");
+        GridBagConstraints gbc_undo = new GridBagConstraints();
+        gbc_undo.gridx = 0;
+        gbc_undo.gridy = 7;
+        add(undo, gbc_undo);
 
         buttonGroup.add(rectangle);
         buttonGroup.add(arrow);
+        buttonGroup.add(oval);
+        buttonGroup.add(text);
     }
 
 
@@ -86,4 +117,35 @@ public class ShapePanel extends JPanel {
         this.rectangle = rectangle;
     }
 
+    public JButton getText() {
+        return text;
+    }
+
+    public void setText(JButton text) {
+        this.text = text;
+    }
+
+    public JTextField getTextField() {
+        return textField;
+    }
+
+    public void setTextField(JTextField textField) {
+        this.textField = textField;
+    }
+
+    public JButton getRedo() {
+        return redo;
+    }
+
+    public void setRedo(JButton redo) {
+        this.redo = redo;
+    }
+
+    public JButton getUndo() {
+        return undo;
+    }
+
+    public void setUndo(JButton undo) {
+        this.undo = undo;
+    }
 }

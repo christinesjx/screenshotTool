@@ -13,6 +13,7 @@ public interface Command {
     int ARROW = 1;
     int OVAL = 2;
     int RECTANGLE = 3;
+    int TEXT = 4;
 
 
     void execute(BufferedImage image);
