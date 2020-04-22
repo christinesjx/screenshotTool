@@ -15,7 +15,7 @@ public class Memento {
 
     public void addResult(BufferedImage image) {
 
-        System.out.println(resultsExecuted.size());
+        System.out.println("size: " + resultsExecuted.size());
 
         resultsCancelled.clear();
 

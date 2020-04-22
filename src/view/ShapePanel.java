@@ -12,8 +12,8 @@ public class ShapePanel extends JPanel {
     private JButton arrow;
     private JButton oval;
     private JButton rectangle;
-    private JButton text;
-    private JTextField textField;
+
+    private JButton crop;
 
     private JButton redo;
     private JButton undo;
@@ -53,35 +53,28 @@ public class ShapePanel extends JPanel {
         gbc_rectangle.gridy = 3;
         add(rectangle, gbc_rectangle);
 
-        textField = new JTextField("");
-        textField.setPreferredSize(new Dimension(100, 100));
-        GridBagConstraints gbc_textField = new GridBagConstraints();
-        gbc_textField.gridx = 0;
-        gbc_textField.gridy = 4;
-        add(textField, gbc_textField);
+        crop = new JButton("Crop");
+        GridBagConstraints gbc_crop = new GridBagConstraints();
+        gbc_crop.gridx = 0;
+        gbc_crop.gridy = 4;
+        add(crop, gbc_crop);
 
-        text = new JButton("Text");
-        GridBagConstraints gbc_text = new GridBagConstraints();
-        gbc_text.gridx = 0;
-        gbc_text.gridy = 5;
-        add(text, gbc_text);
 
         redo = new JButton("Redo");
         GridBagConstraints gbc_redo = new GridBagConstraints();
         gbc_redo.gridx = 0;
-        gbc_redo.gridy = 6;
+        gbc_redo.gridy = 7;
         add(redo, gbc_redo);
 
         undo = new JButton("Undo");
         GridBagConstraints gbc_undo = new GridBagConstraints();
         gbc_undo.gridx = 0;
-        gbc_undo.gridy = 7;
+        gbc_undo.gridy = 8;
         add(undo, gbc_undo);
 
         buttonGroup.add(rectangle);
         buttonGroup.add(arrow);
         buttonGroup.add(oval);
-        buttonGroup.add(text);
     }
 
 
@@ -117,22 +110,6 @@ public class ShapePanel extends JPanel {
         this.rectangle = rectangle;
     }
 
-    public JButton getText() {
-        return text;
-    }
-
-    public void setText(JButton text) {
-        this.text = text;
-    }
-
-    public JTextField getTextField() {
-        return textField;
-    }
-
-    public void setTextField(JTextField textField) {
-        this.textField = textField;
-    }
-
     public JButton getRedo() {
         return redo;
     }
@@ -147,5 +124,13 @@ public class ShapePanel extends JPanel {
 
     public void setUndo(JButton undo) {
         this.undo = undo;
+    }
+
+    public JButton getCrop() {
+        return crop;
+    }
+
+    public void setCrop(JButton crop) {
+        this.crop = crop;
     }
 }

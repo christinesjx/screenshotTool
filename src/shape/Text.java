@@ -2,8 +2,8 @@ package shape;
 
 public class Text implements Shape {
 
-    private int x;
-    private int y;
+    private int x,y;
+
     private String string;
 
     public Text(int x, int y, String string) {

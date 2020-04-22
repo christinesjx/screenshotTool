@@ -8,6 +8,9 @@ import shape.Text;
 import view.View;
 
 import javax.imageio.ImageIO;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.Document;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
@@ -29,15 +32,17 @@ public class Controller {
         this.view.getShapePanel().getArrow().addActionListener(new ArrowButtonListener());
         this.view.getShapePanel().getRectangle().addActionListener(new RectangleButtonListener());
         this.view.getShapePanel().getOval().addActionListener(new OvalButtonListener());
-        this.view.getShapePanel().getText().addActionListener(new TextButtonListener());
-        this.view.getShapePanel().getTextField().addActionListener(new TxtInputListener());
+        this.view.getTextPanel().getAddText().addActionListener(new TextButtonListener());
+        this.view.getTextPanel().getTextField().getDocument().addDocumentListener(new MyDocumentListener());
         this.view.getShapePanel().getRedo().addActionListener(new RedoListener());
         this.view.getShapePanel().getUndo().addActionListener(new UndoListener());
+        this.view.getShapePanel().getCrop().addActionListener(new CropListener());
 
         model.getMouseEvents().add(drawOvalEvent);
         model.getMouseEvents().add(drawArrowEvent);
         model.getMouseEvents().add(drawTextEvent);
         model.getMouseEvents().add(drawRectangleEvent);
+        model.getMouseEvents().add(cropEvent);
 
     }
 
@@ -208,6 +213,8 @@ public class Controller {
         @Override
         public void mousePressed(MouseEvent e) {
             model.setMouseMoveFinished(false);
+            x = e.getX();
+            y = e.getY();
 
             textCommand = new TextCommand(new Text(x, y, model.getCurrentText()));
             model.setCurrentCommand(textCommand);
@@ -220,8 +227,6 @@ public class Controller {
             mouseDragged(e);
             model.setMouseMoveFinished(true);
             model.setCurrentText("");
-            view.getShapePanel().getTextField().setText("");
-
             textCommand = null;
         }
 
@@ -238,11 +243,84 @@ public class Controller {
 
 
 
+    private MouseAdapter cropEvent = new MouseAdapter() {
+
+        private int x1, y1;
+        private int x2, y2;
+
+        private CropCommand cropCommand;
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            model.setMouseMoveFinished(false);
+            System.out.println("mousePressed");
+
+            x1 = e.getX();
+            y1 = e.getY();
+            x2 = e.getX();
+            y2 = e.getY();
+
+            cropCommand = new CropCommand(new shape.Rectangle(x1, y1, 0, 0));
+            model.setCurrentCommand(cropCommand);
+            view.getImagePanel().repaint();
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            model.setMouseMoveFinished(true);
+
+            setPoints(e);
+
+            BufferedImage bufferedImage = cropCommand.getImage();
+            System.out.println(bufferedImage.getWidth());
+            System.out.println(bufferedImage.getHeight());
+
+            model.getResultQueue().addResult(bufferedImage);
+
+            cropCommand = null;
+
+            setCurrentAction(Command.ARROW);
+        }
+
+        @Override
+        public void mouseDragged(MouseEvent e) {
+            model.setMouseMoveFinished(false);
+
+            setPoints(e);
+
+
+            view.getImagePanel().repaint();
+        }
+
+        private void setPoints(MouseEvent e){
+            x2 = e.getX();
+            y2 = e.getY();
+
+            if (x2 >= x1 && y2 >= y1) {
+                cropCommand.setPoint(x1, y1);
+            } else if (x2 >= x1) {
+                cropCommand.setPoint(x1, y2);
+            } else if (y2 >= y1) {
+                cropCommand.setPoint(x2, y1);
+            } else {
+                cropCommand.setPoint(x2, y2);
+            }
+
+            cropCommand.setWidth(Math.abs(x1 - x2));
+            cropCommand.setHeight(Math.abs(y1 - y2));
+        }
+
+    };
+
+
+
 
 
     public void setCurrentAction(int action) {
         int currentAction = action;
         model.setCurrentAction(action);
+
+        System.out.println(currentAction);
 
         for (MouseAdapter mouseAdapter : model.getMouseEvents()) {
             view.getImagePanel().removeMouseListener(mouseAdapter);
@@ -268,10 +346,12 @@ public class Controller {
                 view.getImagePanel().addMouseListener(drawTextEvent);
                 view.getImagePanel().addMouseMotionListener(drawTextEvent);
                 break;
+            case Command.CROP:
+                view.getImagePanel().addMouseListener(cropEvent);
+                view.getImagePanel().addMouseMotionListener(cropEvent);
+                break;
         }
     }
-
-
 
 
     public void clean() {
@@ -315,20 +395,43 @@ public class Controller {
         @Override
         public void actionPerformed(ActionEvent event)
         {
-            System.out.println("DRAW_OVAL");
-
+            System.out.println("Text");
             setCurrentAction(Command.TEXT);
         }
     }
 
-    class TxtInputListener implements ActionListener {
+
+    class MyDocumentListener implements DocumentListener {
+        String newline = "\n";
+
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+            printIt(e);
+        }
+
+        public void removeUpdate(DocumentEvent e) {
+            printIt(e);
+        }
+
+        public void changedUpdate(DocumentEvent e) {
+            printIt(e);
+        }
+
+        private void printIt(DocumentEvent documentEvent) {
+
+            System.out.println(view.getTextPanel().getTextField().getText());
+            model.setCurrentText(view.getTextPanel().getTextField().getText());
+        }
+
+    }
+
+    class CropListener implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent event)
         {
-            String input = view.getShapePanel().getTextField().getText();
-            model.setCurrentText(input);
-            System.out.println(input);
+            System.out.println("DRAW_crop");
+            setCurrentAction(Command.CROP);
         }
     }
 
@@ -362,14 +465,26 @@ public class Controller {
         public void actionPerformed(ActionEvent event)
         {
             try {
-                Thread.sleep(500);
                 Robot robot = new Robot();
-                java.awt.Rectangle rectangle = new java.awt.Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
-                BufferedImage bufferedImage = robot.createScreenCapture(rectangle);
-  /*              File file = new File("screen-capture.png");
-                boolean status = ImageIO.write(bufferedImage, "png", file);
-                System.out.println("Screen Captured ? " + status + " File Path:- " + file.getAbsolutePath());
-*/
+
+                /**
+                 * Get the current screen dimensions.
+                 */
+                Dimension d = new Dimension(Toolkit.getDefaultToolkit().getScreenSize());
+                int width = (int) d.getWidth();
+                int height = (int) d.getHeight();
+
+                robot.delay(500);
+
+                /**
+                 * Create a screen capture of the active window and then create a buffered image
+                 * to be saved to disk.
+                 */
+                BufferedImage bufferedImage = robot.createScreenCapture(new Rectangle(0, 0, width,
+                        height));
+
+
+
                 view.getImagePanel().setPreferredSize(new Dimension(bufferedImage.getWidth(), bufferedImage.getHeight()));
                 view.getImagePanel().revalidate();
 
@@ -378,7 +493,7 @@ public class Controller {
                 view.getImagePanel().repaint();
                 view.getImagePanel().setVisible(true);
 
-            } catch (AWTException  | InterruptedException ex) {
+            } catch (AWTException ex) {
                 System.err.println(ex);
             }
         }
@@ -391,6 +506,9 @@ public class Controller {
             try {
 
                 File outputfile = new File("image.jpg");
+                System.out.println(model.getResultQueue().getLastResult().getWidth());
+                System.out.println(model.getResultQueue().getLastResult().getHeight());
+
                 ImageIO.write(model.getResultQueue().getLastResult(), "jpg", outputfile);
 
 

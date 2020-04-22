@@ -1,6 +1,5 @@
 package view;
 
-import command.Command;
 import controller.Controller;
 import model.Model;
 
@@ -9,7 +8,6 @@ import javax.swing.border.EtchedBorder;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.MouseAdapter;
 
 public class View {
 
@@ -18,6 +16,7 @@ public class View {
     private ImagePanel imagePanel;
     private ShapePanel shapePanel;
     private ToolBarPanel toolBarPanel;
+    private TextPanel textPanel;
 
 
     private JFrame frame;
@@ -40,6 +39,9 @@ public class View {
 
         shapePanel = new ShapePanel(model);
         frame.getContentPane().add(shapePanel, BorderLayout.WEST);
+
+        textPanel = new TextPanel(model);
+        frame.getContentPane().add(textPanel, BorderLayout.SOUTH);
 
         canvasWrapper = new JPanel();
         canvasWrapper.setAutoscrolls(true);
@@ -104,10 +106,13 @@ public class View {
     }
 
 
+    public TextPanel getTextPanel() {
+        return textPanel;
+    }
 
-
-
-
+    public void setTextPanel(TextPanel textPanel) {
+        this.textPanel = textPanel;
+    }
 
     /**
      * Launch the application.

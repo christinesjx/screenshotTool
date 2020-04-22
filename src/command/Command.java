@@ -2,6 +2,7 @@ package command;
 
 
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 /**
  *
@@ -14,6 +15,7 @@ public interface Command {
     int OVAL = 2;
     int RECTANGLE = 3;
     int TEXT = 4;
+    int CROP = 5;
 
 
     void execute(BufferedImage image);

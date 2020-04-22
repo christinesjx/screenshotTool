@@ -2,6 +2,7 @@ package model;
 
 import command.Command;
 import command.Memento;
+import command.TextCommand;
 
 import java.awt.event.MouseAdapter;
 import java.util.ArrayList;
