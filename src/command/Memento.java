@@ -6,57 +6,51 @@ import java.util.LinkedList;
 
 public class Memento {
 
-    private int maxResultsNumber = 10;
+    private int maxImageNum = 10;
 
-    private LinkedList<BufferedImage> resultsExecuted = new LinkedList<>();
+    private LinkedList<BufferedImage> commandStack = new LinkedList<>();
 
-    private LinkedList<BufferedImage> resultsCancelled = new LinkedList<>();
+    private LinkedList<BufferedImage> redoStack = new LinkedList<>();
 
 
-    public void addResult(BufferedImage image) {
+    public void addImage(BufferedImage image) {
 
-        System.out.println("size: " + resultsExecuted.size());
-
-        resultsCancelled.clear();
-
-        resultsExecuted.add(image);
-
-        if(resultsExecuted.size() > maxResultsNumber) {
-            resultsExecuted.removeFirst();
+        commandStack.addFirst(image);
+        if (commandStack.size() > maxImageNum) {
+            commandStack.removeLast();
         }
+
+        redoStack.clear();
     }
 
     public void undo() {
-        BufferedImage image =  resultsExecuted.removeLast();
-
-        resultsCancelled.add(image);
+        if (commandStack.isEmpty()) {
+            return;
+        }
+        BufferedImage image = commandStack.removeFirst();
+        redoStack.addFirst(image);
     }
 
-    public void redo() {
-        BufferedImage image = resultsCancelled.removeLast();
 
-        resultsExecuted.add(image);
+    public void redo() {
+        if (redoStack.isEmpty()) {
+            return;
+        }
+        BufferedImage image = redoStack.removeFirst();
+        commandStack.addFirst(image);
     }
 
     public void clean() {
-        resultsExecuted.clear();
-        resultsCancelled.clear();
+        commandStack.clear();
+        redoStack.clear();
     }
 
     public BufferedImage getLastResult() {
-        return resultsExecuted.getLast();
+        return commandStack.getFirst();
     }
 
     public boolean isEmpty() {
-        return resultsExecuted.isEmpty();
-    }
-
-    public boolean undoable() {
-        return !resultsExecuted.isEmpty();
-    }
-
-    public boolean redoable() {
-        return !resultsCancelled.isEmpty();
+        return commandStack.isEmpty();
     }
 
 }

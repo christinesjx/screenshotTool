@@ -16,26 +16,31 @@ public class TextPanel extends JPanel {
     private JTextArea textField;
 
     private JButton clear;
+    private JButton close;
 
 
     public TextPanel(Model model) {
         this.model = model;
 
         setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-        FlowLayout gridBagLayout = new FlowLayout();
+        FlowLayout flowLayout = new FlowLayout();
 
-        setLayout(gridBagLayout);
+        setLayout(flowLayout);
 
         textField = new JTextArea(5, 20);
         textField.setLineWrap(true);
         textField.setPreferredSize(new Dimension(100, 100));
         add(textField);
 
-        addText = new JButton("Text");
+        addText = new JButton("Add Text");
         add(addText);
 
         clear = new JButton("Clear");
         add(clear);
+
+
+        close = new JButton("Close");
+        add(close);
 
         clear.addActionListener(new ActionListener() {
             @Override
@@ -43,6 +48,14 @@ public class TextPanel extends JPanel {
                 textField.setText("");
             }
         });
+
+        close.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setVisible(false);
+            }
+        });
+        setVisible(false);
     }
 
 
@@ -50,15 +63,8 @@ public class TextPanel extends JPanel {
         return addText;
     }
 
-    public void setAddText(JButton addText) {
-        this.addText = addText;
-    }
-
     public JTextArea getTextField() {
         return textField;
     }
 
-    public void setTextField(JTextArea textField) {
-        this.textField = textField;
-    }
 }

@@ -2,7 +2,7 @@ package shape;
 
 public class Text implements Shape {
 
-    private int x,y;
+    private int x, y;
 
     private String string;
 

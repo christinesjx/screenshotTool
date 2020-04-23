@@ -1,6 +1,6 @@
 package shape;
 
-public class Oval implements Shape{
+public class Oval implements Shape {
     private int x;
     private int y;
     private int width;

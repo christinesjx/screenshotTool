@@ -1,5 +1,6 @@
 package view;
 
+
 import controller.Controller;
 import model.Model;
 
@@ -31,17 +32,21 @@ public class View {
 
     private void initialize() {
         frame = new JFrame();
-        frame.setBounds(100, 100, 865, 520);
+        frame.setBounds(100, 100, 800, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         toolBarPanel = new ToolBarPanel(model);
-        frame.getContentPane().add(toolBarPanel, BorderLayout.NORTH);
-
         shapePanel = new ShapePanel(model);
-        frame.getContentPane().add(shapePanel, BorderLayout.WEST);
+
+        GridLayout gridLayout = new GridLayout(2, 1);
+        JPanel topPanel = new JPanel(gridLayout);
+        topPanel.add(toolBarPanel);
+        topPanel.add(shapePanel);
+        frame.getContentPane().add(topPanel, BorderLayout.NORTH);
 
         textPanel = new TextPanel(model);
         frame.getContentPane().add(textPanel, BorderLayout.SOUTH);
+
 
         canvasWrapper = new JPanel();
         canvasWrapper.setAutoscrolls(true);
@@ -59,7 +64,6 @@ public class View {
 
         imagePanel = new ImagePanel(model);
         InnerWrapper.add(imagePanel);
-        imagePanel.setBounds(2, 2, 400, 300);
 
         JScrollPane scrollPane = new JScrollPane(InnerWrapper);
         scrollPane.setBounds(2, 2, 402, 302);
@@ -69,16 +73,21 @@ public class View {
 
             @Override
             public void componentResized(ComponentEvent e) {
-
                 super.componentResized(e);
-                scrollPane.setBounds(0,0,canvasWrapper.getWidth(),canvasWrapper.getHeight());
+                scrollPane.setBounds(0, 0, canvasWrapper.getWidth(), canvasWrapper.getHeight());
                 canvasWrapper.revalidate();
             }
 
         });
 
+    }
 
-        imagePanel.setLayout(null);
+    public JFrame getFrame() {
+        return frame;
+    }
+
+    public void setFrame(JFrame frame) {
+        this.frame = frame;
     }
 
     public ImagePanel getImagePanel() {
@@ -112,6 +121,14 @@ public class View {
 
     public void setTextPanel(TextPanel textPanel) {
         this.textPanel = textPanel;
+    }
+
+    public JPanel getCanvasWrapper() {
+        return canvasWrapper;
+    }
+
+    public void setCanvasWrapper(JPanel canvasWrapper) {
+        this.canvasWrapper = canvasWrapper;
     }
 
     /**

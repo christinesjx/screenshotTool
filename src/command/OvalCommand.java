@@ -16,7 +16,7 @@ public class OvalCommand implements Command {
     @Override
     public void execute(BufferedImage image) {
         Graphics2D g2d = (Graphics2D) image.getGraphics();
-        g2d.setColor(Color.BLACK);
+        g2d.setColor(Color.BLUE);
         g2d.drawOval(oval.getX(), oval.getY(), oval.getWidth(), oval.getHeight());
     }
 

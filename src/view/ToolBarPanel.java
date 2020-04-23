@@ -4,11 +4,9 @@ import model.Model;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.io.File;
+
 
 public class ToolBarPanel extends JPanel {
 
@@ -27,16 +25,13 @@ public class ToolBarPanel extends JPanel {
         add(saveButton);
     }
 
-    public void addScreenshotListener(ActionListener listenForScreenshotButton) {
-
-        screenShotButton.addActionListener(listenForScreenshotButton);
+    public JButton getScreenShotButton() {
+        return screenShotButton;
     }
 
 
-    public void addSaveScreenshotListener(ActionListener listenForSaveScreenshotButton) {
-
-        saveButton.addActionListener(listenForSaveScreenshotButton);
+    public JButton getSaveButton() {
+        return saveButton;
     }
-
 
 }

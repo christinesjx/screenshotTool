@@ -3,7 +3,6 @@ package view;
 import model.Model;
 
 import javax.swing.*;
-import javax.swing.border.EtchedBorder;
 import java.awt.*;
 
 public class ShapePanel extends JPanel {
@@ -12,7 +11,7 @@ public class ShapePanel extends JPanel {
     private JButton arrow;
     private JButton oval;
     private JButton rectangle;
-
+    private JToggleButton addText;
     private JButton crop;
 
     private JButton redo;
@@ -23,67 +22,46 @@ public class ShapePanel extends JPanel {
         this.model = model;
 
         ButtonGroup buttonGroup = new ButtonGroup();
-
         setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-        setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-        GridBagLayout gridBagLayout = new GridBagLayout();
-        gridBagLayout.columnWidths = new int[]{0, 0, 0};
-        gridBagLayout.rowHeights = new int[]{0, 0, 0, 0, 0, 0};
-        gridBagLayout.columnWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
-        gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
-        setLayout(gridBagLayout);
+
+        FlowLayout flowLayout = new FlowLayout();
+        flowLayout.setAlignment(FlowLayout.LEFT);
+        setLayout(flowLayout);
 
 
         oval = new JButton("Oval");
-        GridBagConstraints gbc_oval = new GridBagConstraints();
-        gbc_oval.gridx = 0;
-        gbc_oval.gridy = 1;
-        add(oval, gbc_oval);
-        buttonGroup.add(oval);
-
         arrow = new JButton("Arrow");
-        GridBagConstraints gbc_arrow = new GridBagConstraints();
-        gbc_arrow.gridx = 0;
-        gbc_arrow.gridy = 2;
-        add(arrow, gbc_arrow);
-
         rectangle = new JButton("Rectangle");
-        GridBagConstraints gbc_rectangle = new GridBagConstraints();
-        gbc_rectangle.gridx = 0;
-        gbc_rectangle.gridy = 3;
-        add(rectangle, gbc_rectangle);
-
         crop = new JButton("Crop");
-        GridBagConstraints gbc_crop = new GridBagConstraints();
-        gbc_crop.gridx = 0;
-        gbc_crop.gridy = 4;
-        add(crop, gbc_crop);
-
-
         redo = new JButton("Redo");
-        GridBagConstraints gbc_redo = new GridBagConstraints();
-        gbc_redo.gridx = 0;
-        gbc_redo.gridy = 7;
-        add(redo, gbc_redo);
-
         undo = new JButton("Undo");
-        GridBagConstraints gbc_undo = new GridBagConstraints();
-        gbc_undo.gridx = 0;
-        gbc_undo.gridy = 8;
-        add(undo, gbc_undo);
+        addText = new JToggleButton("Text");
 
+        add(oval);
+        add(arrow);
+        add(rectangle);
+        add(addText);
+        add(crop);
+        add(redo);
+        add(undo);
+
+        buttonGroup.add(oval);
         buttonGroup.add(rectangle);
         buttonGroup.add(arrow);
         buttonGroup.add(oval);
+        buttonGroup.add(redo);
+        buttonGroup.add(undo);
+        buttonGroup.add(addText);
+
     }
 
 
-    public Model getModel() {
-        return model;
+    public JToggleButton getAddText() {
+        return addText;
     }
 
-    public void setModel(Model model) {
-        this.model = model;
+    public void setAddText(JToggleButton addText) {
+        this.addText = addText;
     }
 
     public JButton getArrow() {

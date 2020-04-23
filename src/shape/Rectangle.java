@@ -1,9 +1,9 @@
 package shape;
 
 
-public class Rectangle implements Shape{
+public class Rectangle implements Shape {
 
-    private int x,y;
+    private int x, y;
     private int width;
     private int height;
 

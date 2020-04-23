@@ -5,7 +5,6 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 /**
- *
  * Command + Memento --> Redo, Undo
  * https://www.developer.com/design/article.php/3720566/Working-With-Design-Patterns-Memento.htm
  */

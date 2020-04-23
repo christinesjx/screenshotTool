@@ -15,8 +15,7 @@ public class RectangleCommand implements Command{
     @Override
     public void execute(BufferedImage image) {
         Graphics2D g2d = (Graphics2D) image.getGraphics();
-
-        g2d.setColor(Color.BLACK);
+        g2d.setColor(Color.BLUE);
         g2d.drawRect(rectangle.getX(), rectangle.getY(), rectangle.getWidth(), rectangle.getHeight());
     }
 

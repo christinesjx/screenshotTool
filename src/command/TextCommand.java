@@ -1,6 +1,7 @@
 package command;
 
 import shape.Text;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
@@ -8,7 +9,6 @@ import java.awt.image.BufferedImage;
 public class TextCommand implements Command {
 
     private Text text;
-    private String string;
 
     public TextCommand(Text text) {
         this.text = text;
@@ -17,9 +17,10 @@ public class TextCommand implements Command {
 
     @Override
     public void execute(BufferedImage image) {
+        System.out.println("execute textCommand");
 
         Graphics2D g2d = (Graphics2D) image.getGraphics();
-        g2d.setColor(Color.BLACK);
+        g2d.setColor(Color.BLUE);
 
         RenderingHints rh = new RenderingHints(RenderingHints.KEY_TEXT_ANTIALIASING,
                 RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
@@ -27,7 +28,7 @@ public class TextCommand implements Command {
         g2d.setFont(new Font("Dialog", Font.PLAIN, 20));
 
         int y = text.getY();
-        for (String line : text.getString().split("\n")){
+        for (String line : text.getString().split("\n")) {
             g2d.drawString(line, text.getX(), y += g2d.getFontMetrics().getHeight());
         }
     }
@@ -38,11 +39,4 @@ public class TextCommand implements Command {
         text.setY(y);
     }
 
-    public String getString() {
-        return string;
-    }
-
-    public void setString(String string) {
-        this.string = string;
-    }
 }
