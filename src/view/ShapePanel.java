@@ -7,7 +7,6 @@ import java.awt.*;
 
 public class ShapePanel extends JPanel {
 
-    private Model model;
     private JButton arrow;
     private JButton oval;
     private JButton rectangle;
@@ -18,8 +17,8 @@ public class ShapePanel extends JPanel {
     private JButton undo;
 
 
+
     public ShapePanel(Model model) {
-        this.model = model;
 
         ButtonGroup buttonGroup = new ButtonGroup();
         setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));

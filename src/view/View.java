@@ -12,7 +12,6 @@ import java.awt.event.ComponentEvent;
 
 public class View {
 
-    private Model model;
 
     private ImagePanel imagePanel;
     private ShapePanel shapePanel;
@@ -23,9 +22,9 @@ public class View {
     private JFrame frame;
     private JPanel canvasWrapper;
 
+    private Model model;
 
     public View(Model model) throws HeadlessException {
-
         this.model = model;
         initialize();
     }

@@ -10,7 +10,6 @@ import java.awt.event.ActionListener;
 
 public class TextPanel extends JPanel {
 
-    private Model model;
 
     private JButton addText;
     private JTextArea textField;
@@ -20,7 +19,6 @@ public class TextPanel extends JPanel {
 
 
     public TextPanel(Model model) {
-        this.model = model;
 
         setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
         FlowLayout flowLayout = new FlowLayout();

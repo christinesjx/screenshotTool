@@ -1,12 +1,14 @@
 package model;
 
 import command.Command;
-import command.Memento;
+import command.memento.Originator;
 
 public class Model {
 
+    private Originator memento = new Originator();
+
     private Command currentCommand = null;
-    private Memento memento = new Memento();
+//    private Memento memento = new Memento();
     private int currentAction = Command.ARROW;
     private boolean isMouseMoveFinished = true;
     private String currentText = "";
@@ -19,7 +21,7 @@ public class Model {
         this.currentCommand = currentCommand;
     }
 
-    public Memento getMemento() {
+    public Originator getMemento() {
         return memento;
     }
 

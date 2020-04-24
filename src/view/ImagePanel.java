@@ -12,7 +12,6 @@ public class ImagePanel extends JPanel {
     Model model;
 
     public ImagePanel(Model model) {
-
         this.model = model;
 
         setPreferredSize(new Dimension(0, 0));
@@ -28,16 +27,16 @@ public class ImagePanel extends JPanel {
 
     public void paint(Graphics g) {
         super.paint(g);
-
-        BufferedImage image = new BufferedImage(model.getMemento().getLastResult().getWidth(), model.getMemento().getLastResult().getHeight(), BufferedImage.TYPE_INT_RGB);
+        BufferedImage bfImage = model.getMemento().getImage();
+        BufferedImage image = new BufferedImage(bfImage.getWidth(), bfImage.getHeight(), BufferedImage.TYPE_INT_RGB);
         Graphics gi = image.getGraphics();
 
         gi.setColor(Color.WHITE);
         gi.fillRect(0, 0, getWidth(), getHeight());
 
 
-        if (!model.getMemento().isEmpty()) {
-            BufferedImage lastImage = model.getMemento().getLastResult();
+        if (model.getMemento().getImage() != null) {
+            BufferedImage lastImage = model.getMemento().getImage();
             gi.drawImage(lastImage, 0, 0, this);
         }
 
@@ -46,7 +45,7 @@ public class ImagePanel extends JPanel {
         }
 
         if (model.isMouseMoveFinished()) {
-            model.getMemento().addImage(image);
+            model.getMemento().setAndStoreState(image);
             model.setMouseMoveFinished(false);
             model.setCurrentCommand(null);
         }
