@@ -1,17 +1,17 @@
 
-## Application Description
+# Application Description
+
 A basic screenshot tool based on Java swing made for Windows.
 This application follows the OOP design principles and various designed patterns.
 
 ### Why?
-In Windows, the snipping tool only allows users to draw strokes. It doesn't support straight line, shape, or text features. 
-It is such a hassle to work with screenshot image in Windows. 
-Whenever I need to annotate a screenshot image at work, I have to capture the screenshot with the snipping tool and then edit it in PowerPoint. 
+In Windows, the snipping tool doesn't support straight line, shape, or text features. 
+Whenever I need to annotate a screenshot image, I have to capture the screenshot with the snipping tool and then edit it in PowerPoint. 
 After finish editing, I have to recapture the image to save it.
 
-Therefore, the goal is to make a really basic application that allows me to capture the screen, and support some basic features, which I usually used in PowerPoint.
+Therefore, the goal is to make a really basic application that allows me to capture the screen, and support some basic features.
 
-### Main Features
+## Main Features
 * capture the fullscreen and then crop the desired region.
 * annotate the screenshot by adding text and shapes
 * drag and draw shapes like oval, rectangle, and arrow 
@@ -24,7 +24,7 @@ In the future, more shapes can be added just by simply creating a concrete objec
 Moreover, more features can be developed without too much trouble. A color selection feature would be added in the next step.
 
 
-### Design Patterns
+## Design Patterns
 The following patterns are implemented in this application.
 
 #### MVC Pattern
@@ -57,7 +57,7 @@ The controller class acts as an invoker object which can place command.
 
 ### UML Diagram
 
-![alt text](UML.png)
+![alt text](uml.png)
 
 
 ### Demo Screenshot
