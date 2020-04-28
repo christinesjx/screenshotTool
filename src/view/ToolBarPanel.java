@@ -5,33 +5,42 @@ import model.Model;
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import java.awt.*;
-import java.awt.event.ActionListener;
 
 
 public class ToolBarPanel extends JPanel {
 
-    private JButton screenShotButton;
+    private JButton fullScreenButton;
     private JButton saveButton;
+    private JButton screenshotButton;
 
-    public ToolBarPanel(Model model) {
+    public ToolBarPanel() {
         setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
         FlowLayout flowLayout = (FlowLayout) getLayout();
         flowLayout.setAlignment(FlowLayout.LEFT);
 
-        screenShotButton = new JButton("ScreenShot");
-        add(screenShotButton);
+        screenshotButton = new JButton("Screenshot");
+        add(screenshotButton);
+
+
+        fullScreenButton = new JButton("Full Screenshot");
+        add(fullScreenButton);
 
         saveButton = new JButton("Save");
         add(saveButton);
+        saveButton.setVisible(false);
+
     }
 
-    public JButton getScreenShotButton() {
-        return screenShotButton;
+    public JButton getFullScreenButton() {
+        return fullScreenButton;
     }
-
 
     public JButton getSaveButton() {
         return saveButton;
+    }
+
+    public JButton getScreenshotButton() {
+        return screenshotButton;
     }
 
 }

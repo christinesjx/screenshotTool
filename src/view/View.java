@@ -3,12 +3,9 @@ package view;
 
 import controller.Controller;
 import model.Model;
-
 import javax.swing.*;
-import javax.swing.border.EtchedBorder;
 import java.awt.*;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
+
 
 public class View {
 
@@ -17,12 +14,13 @@ public class View {
     private ShapePanel shapePanel;
     private ToolBarPanel toolBarPanel;
     private TextPanel textPanel;
-
-
+    private JPanel topPanel;
     private JFrame frame;
-    private JPanel canvasWrapper;
-
     private Model model;
+
+
+    private JPanel mainPanel;
+
 
     public View(Model model) throws HeadlessException {
         this.model = model;
@@ -31,55 +29,28 @@ public class View {
 
     private void initialize() {
         frame = new JFrame();
-        frame.setBounds(100, 100, 800, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setBounds(100, 100, 300, 70);
 
-        toolBarPanel = new ToolBarPanel(model);
-        shapePanel = new ShapePanel(model);
+
+        toolBarPanel = new ToolBarPanel();
+        shapePanel = new ShapePanel();
 
         GridLayout gridLayout = new GridLayout(2, 1);
-        JPanel topPanel = new JPanel(gridLayout);
+        topPanel = new JPanel(gridLayout);
         topPanel.add(toolBarPanel);
         topPanel.add(shapePanel);
         frame.getContentPane().add(topPanel, BorderLayout.NORTH);
+        shapePanel.setVisible(false);
 
         textPanel = new TextPanel(model);
         frame.getContentPane().add(textPanel, BorderLayout.SOUTH);
 
-
-        canvasWrapper = new JPanel();
-        canvasWrapper.setAutoscrolls(true);
-        canvasWrapper.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-        frame.getContentPane().add(canvasWrapper, BorderLayout.CENTER);
-        canvasWrapper.setLayout(null);
-
-
-        JPanel InnerWrapper = new JPanel();
-        FlowLayout fl_InnerWrapper = (FlowLayout) InnerWrapper.getLayout();
-        fl_InnerWrapper.setVgap(0);
-        fl_InnerWrapper.setHgap(0);
-        fl_InnerWrapper.setAlignment(FlowLayout.LEFT);
-        InnerWrapper.setBounds(0, 0, 10, 10);
-
         imagePanel = new ImagePanel(model);
-        InnerWrapper.add(imagePanel);
-
-        JScrollPane scrollPane = new JScrollPane(InnerWrapper);
-        scrollPane.setBounds(2, 2, 402, 302);
-        canvasWrapper.add(scrollPane);
-
-        canvasWrapper.addComponentListener(new ComponentAdapter() {
-
-            @Override
-            public void componentResized(ComponentEvent e) {
-                super.componentResized(e);
-                scrollPane.setBounds(0, 0, canvasWrapper.getWidth(), canvasWrapper.getHeight());
-                canvasWrapper.revalidate();
-            }
-
-        });
+        frame.getContentPane().add(imagePanel, BorderLayout.CENTER);
 
     }
+
 
     public JFrame getFrame() {
         return frame;
@@ -122,12 +93,20 @@ public class View {
         this.textPanel = textPanel;
     }
 
-    public JPanel getCanvasWrapper() {
-        return canvasWrapper;
+    public JPanel getTopPanel() {
+        return topPanel;
     }
 
-    public void setCanvasWrapper(JPanel canvasWrapper) {
-        this.canvasWrapper = canvasWrapper;
+    public void setTopPanel(JPanel topPanel) {
+        this.topPanel = topPanel;
+    }
+
+    public JPanel getMainPanel() {
+        return mainPanel;
+    }
+
+    public void setMainPanel(JPanel mainPanel) {
+        this.mainPanel = mainPanel;
     }
 
     /**

@@ -1,6 +1,7 @@
 package controller;
 
 import command.*;
+import command.memento.ScreenshotType;
 import model.Model;
 import shape.*;
 import view.View;
@@ -27,12 +28,14 @@ public class Controller {
         this.view = view;
 
         addListeners();
+
     }
 
     private void addListeners() {
 
-        this.view.getToolBarPanel().getScreenShotButton().addActionListener(new ScreenshotListener());
+        this.view.getToolBarPanel().getScreenshotButton().addActionListener(new ScreenshotListener());
         this.view.getToolBarPanel().getSaveButton().addActionListener(new SaveScreenshotListener());
+        this.view.getToolBarPanel().getFullScreenButton().addActionListener(new FullScreenshotListener());
         this.view.getShapePanel().getArrow().addActionListener(new ArrowButtonListener());
         this.view.getShapePanel().getRectangle().addActionListener(new RectangleButtonListener());
         this.view.getShapePanel().getOval().addActionListener(new OvalButtonListener());
@@ -43,6 +46,33 @@ public class Controller {
         this.view.getShapePanel().getCrop().addActionListener(new CropListener());
         this.view.getShapePanel().getAddText().addActionListener(new TextButtonListener());
     }
+/*
+
+    public void paint(){
+        BufferedImage bfImage = model.getMemento().getImage();
+        BufferedImage image = new BufferedImage(bfImage.getWidth(), bfImage.getHeight(), BufferedImage.TYPE_INT_RGB);
+        Graphics gi = image.getGraphics();
+
+
+        if (model.getMemento().getImage() != null) {
+            BufferedImage lastImage = model.getMemento().getImage();
+            gi.drawImage(lastImage, 0, 0, null);
+            view.getImagePanel().paint(gi);
+
+        }
+
+        if (model.getCurrentCommand() != null) {
+            model.getCurrentCommand().execute(image);
+        }
+
+        if (model.isMouseMoveFinished()) {
+            model.getMemento().setAndStoreState(image);
+            model.setMouseMoveFinished(false);
+            model.setCurrentCommand(null);
+        }
+
+    }
+*/
 
 
     private MouseAdapter arrowEvent = new MouseAdapter() {
@@ -237,16 +267,18 @@ public class Controller {
         private int x2, y2;
 
         private CropCommand cropCommand;
-
+        	private int width = Toolkit.getDefaultToolkit().getScreenSize().width;
+            private int height = Toolkit.getDefaultToolkit().getScreenSize().height;
         @Override
         public void mousePressed(MouseEvent e) {
             model.setMouseMoveFinished(false);
-            System.out.println("cropEvent mousePressed");
+            System.out.println("cropEvent mousePressed" + x1+ " " + x2);
 
             x1 = e.getX();
             y1 = e.getY();
             x2 = e.getX();
             y2 = e.getY();
+
 
             cropCommand = new CropCommand(new shape.Rectangle(x1, y1, 0, 0));
             model.setCurrentCommand(cropCommand);
@@ -255,33 +287,52 @@ public class Controller {
 
         @Override
         public void mouseReleased(MouseEvent e) {
-            System.out.println("cropEvent mouseReleased");
+            System.out.println("cropEvent mouseReleased" + x2 + " " + y2);
 
             model.setMouseMoveFinished(true);
 
             setPoints(e);
 
             BufferedImage bufferedImage = cropCommand.getImage();
-            System.out.println(bufferedImage.getWidth());
-            System.out.println(bufferedImage.getHeight());
-
-            model.getMemento().addImage(bufferedImage);
-
             cropCommand = null;
 
-            setCurrentAction(Command.ARROW);
+
+            view.getImagePanel().setPreferredSize(new Dimension(bufferedImage.getWidth(), bufferedImage.getHeight()));
+            view.getImagePanel().revalidate();
+
+
+            // add image to memento
+            model.getMemento().setAndStoreState(bufferedImage);
+            model.setScreenshotType(ScreenshotType.AreaScreenshot);
+
+            System.out.println("!!!!" + bufferedImage.getWidth() + " " + bufferedImage.getHeight());
+            view.getImagePanel().setSize(new Dimension((int) (model.getMemento().getImage().getWidth()), (int) (model.getMemento().getImage().getHeight())));
+            view.getImagePanel().repaint();
+            view.getFrame().setVisible(true);
+
+
+            setCurrentAction(Command.UNSELECT);
+
+            view.getToolBarPanel().setVisible(true);
+            view.getShapePanel().setVisible(true);
+
+            view.getFrame().dispose();
+            view.getFrame().setUndecorated(false);
+            view.getShapePanel().setVisible(true);
+            view.getTopPanel().setVisible(true);
+            view.getFrame().setVisible(true);
         }
 
         @Override
         public void mouseDragged(MouseEvent e) {
-            System.out.println("cropEvent mouseDragged");
+            System.out.println("cropEvent mouseDragged" + x2 + " " + y2);
 
             model.setMouseMoveFinished(false);
 
             setPoints(e);
-
-
             view.getImagePanel().repaint();
+
+            view.getFrame().repaint();
         }
 
         private void setPoints(MouseEvent e) {
@@ -292,11 +343,7 @@ public class Controller {
                 cropCommand.setPoint(x1, y1);
             } else if (x2 >= x1) {
                 cropCommand.setPoint(x1, y2);
-            } else if (y2 >= y1) {
-                cropCommand.setPoint(x2, y1);
-            } else {
-                cropCommand.setPoint(x2, y2);
-            }
+            } else cropCommand.setPoint(x2, Math.min(y2, y1));
 
             cropCommand.setWidth(Math.abs(x1 - x2));
             cropCommand.setHeight(Math.abs(y1 - y2));
@@ -450,10 +497,8 @@ public class Controller {
         public void actionPerformed(ActionEvent event) {
             model.getMemento().redo();
             view.getImagePanel().repaint();
-
         }
     }
-
 
     class ScreenshotListener implements ActionListener {
 
@@ -487,17 +532,97 @@ public class Controller {
                      * to be saved to disk.
                      */
                     BufferedImage bufferedImage = robot.createScreenCapture(new Rectangle(0, 0, width, height));
+                    model.getMemento().setAndStoreState(bufferedImage);
+
+
+
+                    view.getFrame().dispose();
+                    view.getFrame().setUndecorated(true);
+                    view.getFrame().setVisible(true);
+
                     view.getImagePanel().setPreferredSize(new Dimension(bufferedImage.getWidth(), bufferedImage.getHeight()));
                     view.getImagePanel().revalidate();
 
+                    view.getFrame().setBounds(0,0,width,height);
+                    view.getToolBarPanel().setVisible(false);
+                    view.getShapePanel().setVisible(false);
+                    view.getTextPanel().setVisible(false);
+                    view.getTopPanel().setVisible(false);
+
+
+
                     // clean memento
-                    model.getMemento().clean();
+                    //TODO
+                    model.getMemento().clear();
                     view.getImagePanel().repaint();
 
                     // add image to memento
-                    model.getMemento().addImage(bufferedImage);
+                    view.getImagePanel().setVisible(true);
+                    view.getImagePanel().repaint();
+
+
+                    setCurrentAction(Command.CROP);
+                } catch (AWTException ex) {
+                    System.err.println(ex);
+                }
+            }
+        };
+
+    }
+
+
+    class FullScreenshotListener implements ActionListener {
+
+        /**
+         * excluding own app. from screenshot
+         * reference: https://stackoverflow.com/questions/5898910/screenshot-issue-excluding-own-app-from-screenshot
+         *
+         * @param event
+         */
+        @Override
+        public void actionPerformed(ActionEvent event) {
+            view.getFrame().setVisible(false);
+            Timer timer = new Timer(400, al);
+            timer.setRepeats(false);
+            timer.start();
+        }
+
+
+        ActionListener al = new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                try {
+                    Robot robot = new Robot();
+
+                    // Get the current screen dimensions.
+                    Dimension d = new Dimension(Toolkit.getDefaultToolkit().getScreenSize());
+                    int width = (int) d.getWidth();
+                    int height = (int) d.getHeight();
+
+                    /*
+                     * Create a screen capture of the active window and then create a buffered image
+                     * to be saved to disk.
+                     */
+                    BufferedImage bufferedImage = robot.createScreenCapture(new Rectangle(0, 0, width, height));
+
+                    // clean memento
+                    model.getMemento().clear();
+
+                    // add image to memento
+                    model.getMemento().setAndStoreState(bufferedImage);
+                    model.setScreenshotType(ScreenshotType.FullScreenshot);
+
+                    view.getImagePanel().setPreferredSize(new Dimension(bufferedImage.getWidth(), bufferedImage.getHeight()));
+                    view.getImagePanel().revalidate();
+                    view.getToolBarPanel().getSaveButton().setVisible(true);
+                    view.getShapePanel().setVisible(true);
+
+
+                    view.getFrame().setSize(new Dimension((int) (model.getMemento().getImage().getWidth() * 0.8), (int) (model.getMemento().getImage().getHeight() * 0.8)));
                     view.getImagePanel().repaint();
                     view.getFrame().setVisible(true);
+
+                    view.getMainPanel().repaint();
+                    view.getMainPanel().revalidate();
 
                 } catch (AWTException ex) {
                     System.err.println(ex);
@@ -521,8 +646,13 @@ public class Controller {
                 if (r == JFileChooser.APPROVE_OPTION) {
                     path = j.getSelectedFile().getAbsolutePath();
                     File outputfile = new File(path);
-                    ImageIO.write(model.getMemento().getLastResult(), "jpg", outputfile);
+                    System.out.println("save");
+                    System.out.println(model.getMemento().getImage().getWidth());
+                    System.out.println(model.getMemento().getImage().getHeight());
+
+                    ImageIO.write(model.getMemento().getImage(), "jpg", outputfile);
                 }
+
             } catch (IOException ex) {
                 System.out.println("An error occurred.");
                 ex.printStackTrace();

@@ -2,16 +2,39 @@ package model;
 
 import command.Command;
 import command.memento.Originator;
+import command.memento.ScreenshotType;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public class Model {
 
-    private Originator memento = new Originator();
+    private Originator memento;
 
     private Command currentCommand = null;
-//    private Memento memento = new Memento();
-    private int currentAction = Command.ARROW;
+    private int currentAction = Command.UNSELECT;
     private boolean isMouseMoveFinished = true;
     private String currentText = "";
+    private int width = Toolkit.getDefaultToolkit().getScreenSize().width;
+    private int height = Toolkit.getDefaultToolkit().getScreenSize().height;
+
+    private ScreenshotType screenshotType = null;
+
+    public Model() {
+
+        memento = new Originator();
+        BufferedImage initBFImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        initBFImage.setRGB(0,0,155);
+        memento.setAndStoreState(initBFImage);
+    }
+
+    public ScreenshotType getScreenshotType() {
+        return screenshotType;
+    }
+
+    public void setScreenshotType(ScreenshotType screenshotType) {
+        this.screenshotType = screenshotType;
+    }
 
     public Command getCurrentCommand() {
         return currentCommand;

@@ -15,9 +15,11 @@ public class Originator {
         this.image = image;
     }
 
+
     public BufferedImage getImage() {
         return image;
     }
+
 
     private Memento createMemento() {
         return new Memento(image);

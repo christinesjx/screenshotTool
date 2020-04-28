@@ -17,6 +17,7 @@ public class Caretaker {
 
     public void addMemento(Memento memento) {
 
+        System.out.println("size " + mementoStack.size());
         mementoStack.addFirst(memento);
         if (mementoStack.size() > capacity) {
             mementoStack.removeLast();

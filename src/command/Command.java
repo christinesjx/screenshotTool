@@ -10,6 +10,7 @@ import java.io.IOException;
  */
 public interface Command {
 
+    int UNSELECT = 0;
     int ARROW = 1;
     int OVAL = 2;
     int RECTANGLE = 3;
@@ -18,5 +19,6 @@ public interface Command {
 
 
     void execute(BufferedImage image);
+
 
 }

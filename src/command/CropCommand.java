@@ -19,10 +19,18 @@ public class CropCommand implements Command {
     @Override
     public void execute(BufferedImage image) {
         Graphics2D g2d = (Graphics2D) image.getGraphics();
-        g2d.drawRect(rectangle.getX(), rectangle.getY(), rectangle.getWidth(), rectangle.getHeight());
 
-        if (rectangle.getHeight() > 0 && rectangle.getWidth() > 0) {
-            this.subImage = image.getSubimage(rectangle.getX(), rectangle.getY(), rectangle.getWidth(), rectangle.getHeight());
+        System.out.println(rectangle.getX() + " " + rectangle.getY() + " " +rectangle.getWidth() + " " +rectangle.getHeight());
+        System.out.println(image.getWidth() + " " + image.getHeight());
+
+        if(rectangle.getWidth() > 0 && rectangle.getHeight() >0) {
+            if (rectangle.getWidth() < image.getWidth() && rectangle.getWidth() < image.getHeight()) {
+                g2d.setColor(Color.RED);
+
+                g2d.drawRect(rectangle.getX(), rectangle.getY(), rectangle.getWidth(), rectangle.getHeight());
+                this.subImage = image.getSubimage(rectangle.getX()+1, rectangle.getY()+1, rectangle.getWidth()-1, rectangle.getHeight()-1);
+
+            }
         }
     }
 

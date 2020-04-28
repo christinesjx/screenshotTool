@@ -1,24 +1,31 @@
 package view;
 
-import model.Model;
-
 import javax.swing.*;
 import java.awt.*;
 
 public class ShapePanel extends JPanel {
 
-    private JButton arrow;
-    private JButton oval;
-    private JButton rectangle;
-    private JToggleButton addText;
-    private JButton crop;
+    private JRadioButton arrow;
+    private JRadioButton oval;
+    private JRadioButton rectangle;
+    private JRadioButton addText;
+    private JRadioButton crop;
 
     private JButton redo;
     private JButton undo;
 
 
 
-    public ShapePanel(Model model) {
+
+    public ShapePanel() {
+
+        arrow = new JRadioButton("Arrow");
+        oval = new JRadioButton("Oval");
+        rectangle = new JRadioButton("Rectangle");
+        crop = new JRadioButton("Crop");
+        redo = new JButton("Redo");
+        undo = new JButton("Undo");
+        addText = new JRadioButton("Text");
 
         ButtonGroup buttonGroup = new ButtonGroup();
         setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -26,15 +33,6 @@ public class ShapePanel extends JPanel {
         FlowLayout flowLayout = new FlowLayout();
         flowLayout.setAlignment(FlowLayout.LEFT);
         setLayout(flowLayout);
-
-
-        oval = new JButton("Oval");
-        arrow = new JButton("Arrow");
-        rectangle = new JButton("Rectangle");
-        crop = new JButton("Crop");
-        redo = new JButton("Redo");
-        undo = new JButton("Undo");
-        addText = new JToggleButton("Text");
 
         add(oval);
         add(arrow);
@@ -48,6 +46,7 @@ public class ShapePanel extends JPanel {
         buttonGroup.add(rectangle);
         buttonGroup.add(arrow);
         buttonGroup.add(oval);
+        buttonGroup.add(crop);
         buttonGroup.add(redo);
         buttonGroup.add(undo);
         buttonGroup.add(addText);
@@ -55,36 +54,44 @@ public class ShapePanel extends JPanel {
     }
 
 
-    public JToggleButton getAddText() {
-        return addText;
-    }
-
-    public void setAddText(JToggleButton addText) {
-        this.addText = addText;
-    }
-
-    public JButton getArrow() {
+    public JRadioButton getArrow() {
         return arrow;
     }
 
-    public void setArrow(JButton arrow) {
+    public void setArrow(JRadioButton arrow) {
         this.arrow = arrow;
     }
 
-    public JButton getOval() {
+    public JRadioButton getOval() {
         return oval;
     }
 
-    public void setOval(JButton oval) {
+    public void setOval(JRadioButton oval) {
         this.oval = oval;
     }
 
-    public JButton getRectangle() {
+    public JRadioButton getRectangle() {
         return rectangle;
     }
 
-    public void setRectangle(JButton rectangle) {
+    public void setRectangle(JRadioButton rectangle) {
         this.rectangle = rectangle;
+    }
+
+    public JRadioButton getAddText() {
+        return addText;
+    }
+
+    public void setAddText(JRadioButton addText) {
+        this.addText = addText;
+    }
+
+    public JRadioButton getCrop() {
+        return crop;
+    }
+
+    public void setCrop(JRadioButton crop) {
+        this.crop = crop;
     }
 
     public JButton getRedo() {
@@ -101,13 +108,5 @@ public class ShapePanel extends JPanel {
 
     public void setUndo(JButton undo) {
         this.undo = undo;
-    }
-
-    public JButton getCrop() {
-        return crop;
-    }
-
-    public void setCrop(JButton crop) {
-        this.crop = crop;
     }
 }
