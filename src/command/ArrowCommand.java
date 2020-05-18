@@ -5,6 +5,17 @@ import shape.Arrow;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
+/**
+ * Draw an arrow line between two points.
+ * x1 x-position of first point.
+ * y1 y-position of first point.
+ * x2 x-position of second point.
+ * y2 y-position of second point.
+ * d  the width of the arrow.
+ * h  the height of the arrow.
+ * <p>
+ * Reference: Logic from https://stackoverflow.com/questions/2027613/how-to-draw-a-directed-arrow-line-in-java
+ */
 public class ArrowCommand implements Command {
 
     Arrow arrow;

@@ -35,19 +35,19 @@ public class ImagePanel extends JLabel {
         Graphics gi;
         BufferedImage image;
 
-        image = new BufferedImage(model.getMemento().getImage().getWidth(), model.getMemento().getImage().getHeight(), BufferedImage.TYPE_INT_RGB);
+        image = new BufferedImage(model.getOriginator().getImage().getWidth(), model.getOriginator().getImage().getHeight(), BufferedImage.TYPE_INT_RGB);
         gi = image.getGraphics();
 
 
-        if (model.getMemento().getImage() != null) {
+        if (model.getOriginator().getImage() != null) {
             System.out.println("model.getMemento().getImage() != null");
 
             if(model.getScreenshotType() == ScreenshotType.FullScreenshot){
-                BufferedImage lastImage = model.getMemento().getImage();
+                BufferedImage lastImage = model.getOriginator().getImage();
                 gi.drawImage(lastImage, 0, 0, this);
 
             }else{
-                BufferedImage lastImage = model.getMemento().getImage();
+                BufferedImage lastImage = model.getOriginator().getImage();
                 gi.drawImage(lastImage, 0, 0, this);
 
             }
@@ -61,7 +61,7 @@ public class ImagePanel extends JLabel {
 
         if (model.isMouseMoveFinished()) {
             System.out.println("model.isMouseMoveFinished()");
-            model.getMemento().setAndStoreState(image);
+            model.getOriginator().setAndStoreState(image);
             model.setMouseMoveFinished(false);
             model.setCurrentCommand(null);
         }

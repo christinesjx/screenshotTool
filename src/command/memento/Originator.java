@@ -29,12 +29,12 @@ public class Originator {
         if (m != null) {
             this.setImage(m.getState());
         } else {
-            System.out.println("没有状态可恢复");
+            System.out.println("no state can be restored");
         }
     }
 
-    public void setAndStoreState(BufferedImage state) {
-        this.setImage(state);
+    public void setAndStoreState(BufferedImage newImage) {
+        this.setImage(newImage);
         caretaker.addMemento(this.createMemento());
     }
 

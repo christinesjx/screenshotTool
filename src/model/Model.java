@@ -9,7 +9,7 @@ import java.awt.image.BufferedImage;
 
 public class Model {
 
-    private Originator memento;
+    private Originator originator;
 
     private Command currentCommand = null;
     private int currentAction = Command.UNSELECT;
@@ -22,10 +22,10 @@ public class Model {
 
     public Model() {
 
-        memento = new Originator();
+        originator = new Originator();
         BufferedImage initBFImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         initBFImage.setRGB(0,0,155);
-        memento.setAndStoreState(initBFImage);
+        originator.setAndStoreState(initBFImage);
     }
 
     public ScreenshotType getScreenshotType() {
@@ -44,8 +44,8 @@ public class Model {
         this.currentCommand = currentCommand;
     }
 
-    public Originator getMemento() {
-        return memento;
+    public Originator getOriginator() {
+        return originator;
     }
 
     public int getCurrentAction() {

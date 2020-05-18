@@ -7,7 +7,8 @@ public class Caretaker {
     private LinkedList<Memento> mementoStack;
     private LinkedList<Memento> redoStack;
 
-    private int capacity = 50;
+    private int capacity = 50;        // only save certain number of Memento, allows 50 redo, undo
+
 
     public Caretaker() {
 
@@ -19,6 +20,7 @@ public class Caretaker {
 
         System.out.println("size " + mementoStack.size());
         mementoStack.addFirst(memento);
+
         if (mementoStack.size() > capacity) {
             mementoStack.removeLast();
         }

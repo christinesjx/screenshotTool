@@ -46,34 +46,6 @@ public class Controller {
         this.view.getShapePanel().getCrop().addActionListener(new CropListener());
         this.view.getShapePanel().getAddText().addActionListener(new TextButtonListener());
     }
-/*
-
-    public void paint(){
-        BufferedImage bfImage = model.getMemento().getImage();
-        BufferedImage image = new BufferedImage(bfImage.getWidth(), bfImage.getHeight(), BufferedImage.TYPE_INT_RGB);
-        Graphics gi = image.getGraphics();
-
-
-        if (model.getMemento().getImage() != null) {
-            BufferedImage lastImage = model.getMemento().getImage();
-            gi.drawImage(lastImage, 0, 0, null);
-            view.getImagePanel().paint(gi);
-
-        }
-
-        if (model.getCurrentCommand() != null) {
-            model.getCurrentCommand().execute(image);
-        }
-
-        if (model.isMouseMoveFinished()) {
-            model.getMemento().setAndStoreState(image);
-            model.setMouseMoveFinished(false);
-            model.setCurrentCommand(null);
-        }
-
-    }
-*/
-
 
     private MouseAdapter arrowEvent = new MouseAdapter() {
 
@@ -91,8 +63,8 @@ public class Controller {
             x2 = e.getX();
             y2 = e.getY();
 
-            ShapeType shapeType = ShapeType.ARROW;
-            arrowCommand = new ArrowCommand(new Arrow(x1, y1, x2, y2));
+            arrowCommand = new ArrowCommand((Arrow) new ShapeFactory().getShape(ShapeType.ARROW, x1, y1, x2, y2));
+
             model.setCurrentCommand(arrowCommand);
 
             view.getImagePanel().repaint();
@@ -136,7 +108,8 @@ public class Controller {
             x2 = e.getX();
             y2 = e.getY();
 
-            ovalCommand = new OvalCommand(new Oval(x1, y1, 0, 0));
+            ovalCommand = new OvalCommand((Oval) new ShapeFactory().getShape(ShapeType.OVAL, x1, y1, 0, 0));
+
             model.setCurrentCommand(ovalCommand);
             view.getImagePanel().repaint();
         }
@@ -186,7 +159,7 @@ public class Controller {
             x2 = e.getX();
             y2 = e.getY();
 
-            rectangleCommand = new RectangleCommand(new shape.Rectangle(x1, y1, 0, 0));
+            rectangleCommand = new RectangleCommand((shape.Rectangle) new ShapeFactory().getShape(ShapeType.RECTANGLE, x1, y1, 0, 0));
 
             model.setCurrentCommand(rectangleCommand);
 
@@ -267,12 +240,13 @@ public class Controller {
         private int x2, y2;
 
         private CropCommand cropCommand;
-        	private int width = Toolkit.getDefaultToolkit().getScreenSize().width;
-            private int height = Toolkit.getDefaultToolkit().getScreenSize().height;
+        private int width = Toolkit.getDefaultToolkit().getScreenSize().width;
+        private int height = Toolkit.getDefaultToolkit().getScreenSize().height;
+
         @Override
         public void mousePressed(MouseEvent e) {
             model.setMouseMoveFinished(false);
-            System.out.println("cropEvent mousePressed" + x1+ " " + x2);
+            System.out.println("cropEvent mousePressed" + x1 + " " + x2);
 
             x1 = e.getX();
             y1 = e.getY();
@@ -302,11 +276,11 @@ public class Controller {
 
 
             // add image to memento
-            model.getMemento().setAndStoreState(bufferedImage);
+            model.getOriginator().setAndStoreState(bufferedImage);
             model.setScreenshotType(ScreenshotType.AreaScreenshot);
 
             System.out.println("!!!!" + bufferedImage.getWidth() + " " + bufferedImage.getHeight());
-            view.getImagePanel().setSize(new Dimension((int) (model.getMemento().getImage().getWidth()), (int) (model.getMemento().getImage().getHeight())));
+            view.getImagePanel().setSize(new Dimension((int) (model.getOriginator().getImage().getWidth()), (int) (model.getOriginator().getImage().getHeight())));
             view.getImagePanel().repaint();
             view.getFrame().setVisible(true);
 
@@ -485,7 +459,7 @@ public class Controller {
 
         @Override
         public void actionPerformed(ActionEvent event) {
-            model.getMemento().undo();
+            model.getOriginator().undo();
             view.getImagePanel().repaint();
 
         }
@@ -495,7 +469,7 @@ public class Controller {
 
         @Override
         public void actionPerformed(ActionEvent event) {
-            model.getMemento().redo();
+            model.getOriginator().redo();
             view.getImagePanel().repaint();
         }
     }
@@ -532,8 +506,7 @@ public class Controller {
                      * to be saved to disk.
                      */
                     BufferedImage bufferedImage = robot.createScreenCapture(new Rectangle(0, 0, width, height));
-                    model.getMemento().setAndStoreState(bufferedImage);
-
+                    model.getOriginator().setAndStoreState(bufferedImage);
 
 
                     view.getFrame().dispose();
@@ -543,25 +516,25 @@ public class Controller {
                     view.getImagePanel().setPreferredSize(new Dimension(bufferedImage.getWidth(), bufferedImage.getHeight()));
                     view.getImagePanel().revalidate();
 
-                    view.getFrame().setBounds(0,0,width,height);
+                    view.getFrame().setBounds(0, 0, width, height);
                     view.getToolBarPanel().setVisible(false);
                     view.getShapePanel().setVisible(false);
                     view.getTextPanel().setVisible(false);
                     view.getTopPanel().setVisible(false);
 
 
-
                     // clean memento
                     //TODO
-                    model.getMemento().clear();
+                    model.getOriginator().clear();
                     view.getImagePanel().repaint();
 
                     // add image to memento
                     view.getImagePanel().setVisible(true);
                     view.getImagePanel().repaint();
 
-
                     setCurrentAction(Command.CROP);
+
+                    view.getToolBarPanel().getSaveButton().setVisible(true);
                 } catch (AWTException ex) {
                     System.err.println(ex);
                 }
@@ -605,10 +578,10 @@ public class Controller {
                     BufferedImage bufferedImage = robot.createScreenCapture(new Rectangle(0, 0, width, height));
 
                     // clean memento
-                    model.getMemento().clear();
+                    model.getOriginator().clear();
 
                     // add image to memento
-                    model.getMemento().setAndStoreState(bufferedImage);
+                    model.getOriginator().setAndStoreState(bufferedImage);
                     model.setScreenshotType(ScreenshotType.FullScreenshot);
 
                     view.getImagePanel().setPreferredSize(new Dimension(bufferedImage.getWidth(), bufferedImage.getHeight()));
@@ -617,7 +590,7 @@ public class Controller {
                     view.getShapePanel().setVisible(true);
 
 
-                    view.getFrame().setSize(new Dimension((int) (model.getMemento().getImage().getWidth() * 0.8), (int) (model.getMemento().getImage().getHeight() * 0.8)));
+                    view.getFrame().setSize(new Dimension((int) (model.getOriginator().getImage().getWidth() * 0.8), (int) (model.getOriginator().getImage().getHeight() * 0.8)));
                     view.getImagePanel().repaint();
                     view.getFrame().setVisible(true);
 
@@ -647,10 +620,10 @@ public class Controller {
                     path = j.getSelectedFile().getAbsolutePath();
                     File outputfile = new File(path);
                     System.out.println("save");
-                    System.out.println(model.getMemento().getImage().getWidth());
-                    System.out.println(model.getMemento().getImage().getHeight());
+                    System.out.println(model.getOriginator().getImage().getWidth());
+                    System.out.println(model.getOriginator().getImage().getHeight());
 
-                    ImageIO.write(model.getMemento().getImage(), "jpg", outputfile);
+                    ImageIO.write(model.getOriginator().getImage(), "jpg", outputfile);
                 }
 
             } catch (IOException ex) {
